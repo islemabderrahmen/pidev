@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Commentaire{% endblock %}
+
+{% block content %}
+	<div class="page-wrapper">
+    <div class="content container-fluid pb-0">
+    
+
+    <h1>Modifier Commentaire</h1>
+
+    {{ include('commentaire/_form.html.twig') }}
+
+    <a href="{{ path('app_commentaire_index') }}">back to list</a>
+
+   
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}commentaires
+{% endblock %}
+
+{% block content %}
+	<div class="page-wrapper">
+		<div class="content container-fluid pb-0">
+			<h4 class="mb-3">Commentaires</h4>
+			<div class="row">
+
+
+				<div class="page-header">
+					<div class="row align-items-center">
+						<div class="col-md-12 d-flex justify-content-end">
+
+							<div class="text-right">
+								<a class="btn btn-primary btn-add" style="width:210px" href="{{ path('app_commentaire_new') }}">
+									<i class="feather-plus-square me-1"></i>
+									Ajouter Commentaire
+								</a>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				<div class="card">
+
+
+					<table class="table datatable-basic table table-borderless hover-table" id="datatable">
+						<div class="card-body">
+
+							<div class="header-elements">
+
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th colspan="2">
+											<center>Article</center>
+										</th>
+										<th colspan="2">
+											<center>Date</center>
+										</th>
+										<th colspan="3">
+											<center>Message</center>
+										</th>
+										<th colspan="3">
+											<center>Actions</center>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for commentaire in commentaires %}
+										<tr>
+											<td>{{ commentaire.id }}</td>
+											<td>
+												<center>{{ commentaire.article }}</center>
+											</td>
+											<td colspan="2"></td>
+											<td>
+												<center>{{ commentaire.date| date ('y-d-m') }}</center>
+											</td>
+													<td colspan="3"> <center>{{commentaire.message }}</center></td>
+													<td class="text-end" colspan="3">
+													<center>
+												<div class="actions">
+													
+											<a href="{{ path('app_commentaire_show', {'id': commentaire.id}) }}" class="btn btn-sm bg-primary-light">
+													<i class="far fa-eye"></i>
+												</a>
+
+												&nbsp;
+												<a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm bg-info-light">
+													<i class="far fa-edit"></i>
+													</a> 
+														&nbsp;
+													{{ include('commentaire/_delete_form.html.twig') }}
+
+
+
+
+												</div>
+													</center>
+											</td>
+
+										</tr>
+									{% else %}
+										<tr>
+											<td colspan="4">no records found</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+
+						</div>
+					</div>
+				</div>
+			{% endblock %}
