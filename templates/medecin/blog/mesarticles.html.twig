@@ -1,38 +1,41 @@
-{% extends 'base.html.twig' %}
-
-
-{% block title %}Articles
+{% extends 'basedashboard.html.twig' %}
+{% block title %}
+	Mes Articles
 {% endblock %}
-
 {% block content %}
-
-
-
-			    <div class="page-wrapper">
+	<div class="col-lg-8 col-md-16">
+		<div class="onboarding-content-box">
+			<div class="onboarding-title profile-title">
+				<h2>Mes Articles
+					
+				</h2>
+			</div>
+			<div class="onboarding-content passcode-wrap mail-box">
+				<div class="row">
+					<div class="page-wrapper">
             <div class="content container-fluid">
 
                 <div class="row">
                     <div class="col-md-9">
-                        <ul class="list-links mb-4">
-                           <h2>Les Articles </h2>
-                            
-                        </ul>
+                        
                     </div>
-                   
+                    <div class="col-md-3 text-md-end">
+                        <a href="{{path('app_article_new')}}" class="btn btn-primary btn-blog mb-3">Add Blog</a>
+                    </div>
                 </div>
-                
-                <div  class="row blog-grid-row">
-  {% for article in articles %}
+                <div class="row">
+ {% for article in articles %}
                     <div class="col-md-6 col-xl-4 col-sm-12 d-flex">
-                    
                         <div class="blog grid-blog">
                           <div class="blog-image">
-                                        <a href="{{ path('app_article_show',{id: article.id})}}"><img <center> {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="40" height="40" /> {% endfor %}</a>
+                                        <a href="{{ path('app_article_medecin',{id: article.id})}}"><img <center> {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="40" height="40" /> {% endfor %}</a>
                                     <div class="fav-btn">
-                                    <img src="{{asset('admin/assets/img/icon/eye-icon.png')}}" alt="icon"> 225
+                                  
                                 </div>
                                     </div>
-                        
+
+
+
                             
                             <div class="blog-content">
                                 <ul class="entry-meta meta-item">
@@ -51,25 +54,32 @@
                                 <h3 class="blog-title"><a href="{{ path('app_blog_details',{id: article.id})}}"> {{article.nom }}</a></h3>
                                 <p class="mb-0">{{article.description|slice(0,100) }}</p>
                             </div>
-                           
+                            <div class="row">
+                                <div class="col"><a href="{{path('app_article_edit', {'id': article.id})}}" class="text-success"><i
+                                            class="feather-edit-3 me-1"></i> Edit</a></div>
+                                <div class="col text-end">
+                                   {{ include('article/_delete_form.html.twig') }}
+                                </div>
+                            </div>
                         </div>
-                        	 
                     </div>
 
+        {% endfor %}
+                
 
-                    
 
 
-                    
-
-                      {% endfor %}
 
                    
 
                    
 
 
-                    
+
+
+
+
+
 
                 </div>
 
@@ -98,38 +108,11 @@
             </div>
 
         </div>
-
-
-				
-			{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+							
+			</div>
+		</div>
+	</div>
+{% endblock %}
 
 
 

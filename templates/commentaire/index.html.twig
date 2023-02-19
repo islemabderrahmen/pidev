@@ -15,7 +15,7 @@
 						<div class="col-md-12 d-flex justify-content-end">
 
 							<div class="text-right">
-								<a class="btn btn-primary btn-add" style="width:210px" href="{{ path('app_commentaire_new') }}">
+								<a class="btn btn-primary btn-add" style="width:210px" href="#">
 									<i class="feather-plus-square me-1"></i>
 									Ajouter Commentaire
 								</a>
@@ -61,7 +61,7 @@
 											<td>
 												<center>{{ commentaire.date| date ('y-d-m') }}</center>
 											</td>
-													<td colspan="3"> <center>{{commentaire.message }}</center></td>
+													<td colspan="3"> <center>{{commentaire.message|slice(0,20) }}...</center></td>
 													<td class="text-end" colspan="3">
 													<center>
 												<div class="actions">
@@ -70,12 +70,6 @@
 													<i class="far fa-eye"></i>
 												</a>
 
-												&nbsp;
-												<a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-sm bg-info-light">
-													<i class="far fa-edit"></i>
-													</a> 
-														&nbsp;
-													{{ include('commentaire/_delete_form.html.twig') }}
 
 
 

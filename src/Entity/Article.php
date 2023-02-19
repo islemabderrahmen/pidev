@@ -51,6 +51,8 @@ class Article
     {
         $this->commentaires = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->date= new \DateTime();
+
         
     
        

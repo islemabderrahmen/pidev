@@ -1,34 +1,14 @@
-{% extends 'base.html.twig' %}
+{% extends 'basedashboard.html.twig' %}
 {% block title %}
-	Dawini
+Nouveau article
 {% endblock %}
-{% block css %}
-	{{parent()}}
-	<link rel="shortcut icon" href="{{ asset('admin/assets/img/favicon.png')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/css/bootstrap.min.css')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/fontawesome/css/fontawesome.min.css')}}">
-	<link rel="stylesheet" href="{{asset('admin/assets/plugins/fontawesome/css/all.min.css')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/css/feather.css')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/daterangepicker/daterangepicker.css')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/plugins/select2/css/select2.min.css')}}">
-
-	<link rel="stylesheet" href="{{ asset('admin/assets/css/style.css')}}">
-{% endblock %}
-{% block content%}
-
-<div class="page-wrapper">
-	<div class="content container-fluid">
-		<div class="row justify-content-center">
-			<div class="col-lg-10 col-xl-8">
-
+{% block content %}
+	<div class="col-lg-8 col-md-16">
+		<div class="onboarding-content-box">
+			<div class="onboarding-title profile-title">
 				<div class="blog-view">
 					<div class="blog-single-post">
-						<a href="{{ path('app_article_index') }}" class="back-btn">
+						<a href="{{ path('app_article_mine') }}" class="back-btn">
 							<i class="feather-chevron-left"></i>
 							Liste des articles</a>
 						 <div class="blog-image">
@@ -101,23 +81,14 @@
 				</div>
                 
 			</div>
-  
+
+			</div>
+        </div>
+    </div>  
+			
 
 
-{%endblock%}
-{%block script%}
-{{parent()}}
-<script src="assets/js/jquery-3.6.0.min.js"></script>
+ 
 
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-
-<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<script src="assets/js/moment.min.js"></script>
-<script src="assets/plugins/daterangepicker/daterangepicker.js"></script>
-
-<script src="assets/plugins/select2/js/select2.min.js"></script>
-
-<script src="assets/js/script.js"></script></body>
-
-{%endblock%}
+								
+{% endblock %}

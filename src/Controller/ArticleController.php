@@ -4,8 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Images;
+use App\Entity\Medecin;
+use App\Entity\Specialites;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentaireRepository;
+use App\Repository\MedecinRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +27,19 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    
+    #[Route('/mesarticles', name: 'app_article_mine', methods: ['GET'])]
+    public function article(ArticleRepository $articleRepository): Response
+    {
+        return $this->render('medecin/blog/mesarticles.html.twig', [
+            'articles' => $articleRepository->findAll(),
+            
+        ]);
+    }
 
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ArticleRepository $articleRepository): Response
-    {
+    public function new(Request $request, ArticleRepository $articleRepository ,MedecinRepository $medecinRep,Specialites $specialite): Response
+    {    $medecin=$this->getUser();
+         $specialite=$medecinRep->findBySpecialites($specialite);
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
@@ -54,22 +66,33 @@ class ArticleController extends AbstractController
              }
              $em=$this->getDoctrine()->getManager();
              $article->setDate(new \DateTime());
+            
                      $articleRepository->save($article, true);
 
-            return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_article_mine', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('article/new.html.twig', [
+        return $this->renderForm('medecin/blog/add-blog.html.twig', [
             'article' => $article,
             'form' => $form,
         ]);
     }
 
     #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
-    public function show(Article $article): Response
+    public function show(Article $article ,CommentaireRepository $commentaireRepository): Response
     {
         return $this->render('article/show.html.twig', [
             'article' => $article,
+            'commentaires'=>$commentaireRepository->findByArticle($article),
+        ]);
+    }
+
+    #[Route('article/{id}', name: 'app_article_medecin', methods: ['GET'])]
+    public function showArticle(Article $article ,CommentaireRepository $commentaireRepository): Response
+    {
+        return $this->render('medecin/blog/show-blog.html.twig', [
+            'article' => $article,
+            'commentaires'=>$commentaireRepository->findByArticle($article),
         ]);
     }
 
@@ -101,10 +124,10 @@ class ArticleController extends AbstractController
               }
             $articleRepository->save($article, true);
 
-            return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_article_mine', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('article/edit.html.twig', [
+        return $this->renderForm('medecin/blog/edit-blog.html.twig', [
             'article' => $article,
             'form' => $form,
         ]);
@@ -117,7 +140,7 @@ class ArticleController extends AbstractController
             $articleRepository->remove($article, true);
         }
 
-        return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_article_mine', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('image/delete/{id}', name: 'image_delete_article')]
