@@ -15,8 +15,10 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('nom')
+       
             ->add('description')
            // ->add('medecin')
+         
             ->add('images', FileType::class,[
                 'label' => false,
                 'multiple' => true,

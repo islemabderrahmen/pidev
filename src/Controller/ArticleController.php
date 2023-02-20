@@ -10,14 +10,23 @@ use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentaireRepository;
 use App\Repository\MedecinRepository;
+use App\Repository\SpecialitesRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Doctrine\ORM\EntityManagerInterface;
+#lena route lkol men fou9 bch tkoun fama kelmet article w koll page bch todekhlelha bch tetzed route mtaaa l page athyka l route mere #
 #[Route('/article')]
 class ArticleController extends AbstractController
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
     #[Route('/', name: 'app_article_index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository): Response
     {
@@ -29,17 +38,20 @@ class ArticleController extends AbstractController
 
     #[Route('/mesarticles', name: 'app_article_mine', methods: ['GET'])]
     public function article(ArticleRepository $articleRepository): Response
-    {
+    {   
         return $this->render('medecin/blog/mesarticles.html.twig', [
             'articles' => $articleRepository->findAll(),
+            
+
             
         ]);
     }
 
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ArticleRepository $articleRepository ,MedecinRepository $medecinRep,Specialites $specialite): Response
-    {    $medecin=$this->getUser();
-         $specialite=$medecinRep->findBySpecialites($specialite);
+    public function new(Request $request, ArticleRepository $articleRepository): Response
+    {    $iduser=$this->getUser();
+          $specialte=$iduser->getSpecialites();
+          
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
@@ -64,9 +76,10 @@ class ArticleController extends AbstractController
                  $img->setUrl($fichier);
                  $article->addImage($img);
              }
-             $em=$this->getDoctrine()->getManager();
              $article->setDate(new \DateTime());
-            
+             $article->setMedecin($iduser);
+             $article->setSpecialites($specialte);
+
                      $articleRepository->save($article, true);
 
             return $this->redirectToRoute('app_article_mine', [], Response::HTTP_SEE_OTHER);
@@ -78,7 +91,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_article_show', methods: ['GET'])]
+    #[Route('/show/{id}', name: 'app_article_show', methods: ['GET'])]
     public function show(Article $article ,CommentaireRepository $commentaireRepository): Response
     {
         return $this->render('article/show.html.twig', [
@@ -88,11 +101,12 @@ class ArticleController extends AbstractController
     }
 
     #[Route('article/{id}', name: 'app_article_medecin', methods: ['GET'])]
-    public function showArticle(Article $article ,CommentaireRepository $commentaireRepository): Response
+    public function showArticle(ArticleRepository $articleRepository,Article $article ,CommentaireRepository $commentaireRepository,SpecialitesRepository $specialitiesRepository,$id): Response
     {
         return $this->render('medecin/blog/show-blog.html.twig', [
             'article' => $article,
             'commentaires'=>$commentaireRepository->findByArticle($article),
+            'specialities'=>$articleRepository->findBySpecialites($id),
         ]);
     }
 

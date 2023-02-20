@@ -45,6 +45,9 @@ class Article
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'articles')]
+    private ?Specialites $specialites = null;
+
   
 
     public function __construct()
@@ -173,6 +176,18 @@ class Article
     public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getSpecialites(): ?Specialites
+    {
+        return $this->specialites;
+    }
+
+    public function setSpecialites(?Specialites $specialites): self
+    {
+        $this->specialites = $specialites;
 
         return $this;
     }

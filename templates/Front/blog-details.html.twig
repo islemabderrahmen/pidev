@@ -1,6 +1,6 @@
 {% extends 'home.html.twig' %}
 
-{% block title %}Details Article 
+{% block title %}Details Article
 {% endblock %}
 
 {% block body %}
@@ -9,67 +9,70 @@
 			<div class="row">
 				<div class="col-lg-8 col-md-12">
 					<div class="blog-view">
-					 {% for article in articles %}
-						<div class="blog blog-single-post">
-							<div class="blog-image">
-								<a href="javascript:void(0);"> {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="10" height="10" /> {% endfor %}</a>
-							</div>
-							<h3 class="blog-title">{{article.nom }}</h3>
-							<div class="blog-info clearfix">
-								<div class="post-left">
-									<ul>
-										<li>
-											<div class="post-author">
-												<a href="doctor-profile.html"><img src="assets/img/doctors/doctor-thumb-02.jpg" alt="">
-													<span>Dr. {{article.medecin}}</span>
-												</a>
-											</div>
-										</li>
-										<li>
-											<i class="far fa-calendar"></i>{{article.date|date ('d/m/y') }}</li>
-										<li>
-											<i class="far fa-comments"></i>12 Comments</li>
-										
-									</ul>
+						{% for article in articles %}
+							<div class="blog blog-single-post">
+								<div class="blog-image">
+									<a href="javascript:void(0);">
+										{% for image in article.images|slice(0, 1) %}
+											<img src="{{ asset('/uploads/'~image.name) }}" alt="" width="10" height="10"/>
+										{% endfor %}
+									</a>
+								</div>
+								<h3 class="blog-title">{{article.nom }}</h3>
+								<div class="blog-info clearfix">
+									<div class="post-left">
+										<ul>
+											<li>
+												<div class="post-author">
+													<a href="doctor-profile.html"><img src="assets/img/doctors/doctor-thumb-02.jpg" alt="">
+														<span>Dr.
+															{{article.medecin}}</span>
+													</a>
+												</div>
+											</li>
+											<li>
+												<i class="far fa-calendar"></i>
+												{{article.date|date ('d/m/y') }}</li>
+											<li>
+												<i class="far fa-comments"></i> Comments</li>
+
+										</ul>
+									</div>
+								</div>
+								<div class="blog-content">
+									{{article.description}}
 								</div>
 							</div>
-							<div class="blog-content">
-								{{article.description}}
-							</div>
-						</div>
-						   {% endfor %}
-						
-						<div class="card author-widget clearfix">
-							
-						
-						</div>
+						{% endfor %}
+
+						<div class="card author-widget clearfix"></div>
 						<div class="card blog-comments clearfix">
 							<div class="card-header">
-								<h4 class="card-title">Commentaires (12)</h4>
+								<h4 class="card-title">Commentaires </h4>
 							</div>
 							{%for commentaire in commentaires %}
-							<div class="card-body pb-0">
-								<ul class="comments-list">
-									<li>
-										<div class="comment">
-											<div class="comment-author">
-												<img class="avatar" alt="" src="assets/img/patients/patient4.jpg">
+								<div class="card-body pb-0">
+									<ul class="comments-list">
+										<li>
+											<div class="comment">
+												<div class="comment-author">
+													<img class="avatar" alt="" src="assets/img/patients/patient4.jpg">
+												</div>
+												<div class="comment-block">
+													<span class="comment-by">
+														<span class="blog-author-name">{{commentaire.utilisateur}}</span>
+													</span>
+													<p>{{commentaire.message }}</p>
+													<p class="blog-date">{{commentaire.date|date('y-m-d')}}</p>
+
+												</div>
 											</div>
-											<div class="comment-block">
-												<span class="comment-by">
-													<span class="blog-author-name">{{commentaire.article.nom }}</span>
-												</span>
-												<p>{{commentaire.message }}</p>
-												<p class="blog-date">Dec 6, 2017</p>
-												
-											</div>
-										</div>
-										
-									</li>
-								
-									
-								</ul>
-							</div>
+
+										</li>
+
+
+									</ul>
+								</div>
 							{%endfor %}
 						</div>
 						<div class="card new-comment clearfix">
@@ -77,24 +80,23 @@
 								<h4 class="card-title">Laisser un commentaire</h4>
 							</div>
 							<div class="card-body">
-			{{ form_start(form) }}
-									
-								
-									<div class="form-group">
-										<label>Votre Commentaire</label>
-								{{ form_widget(form.message, {attr:{'class':'form-control bg-grey floating'}}) }}
-									</div>
-									<div class="submit-section">
-										{{ form_row(form.Enregistrer , {attr:{'class':'btn btn-primary save-btn'}}) }}
-									</div>
-			{{ form_end(form) }}
+								{{ form_start(form) }}
+
+
+								<div class="form-group">
+									<label>Votre Commentaire</label>
+									{{ form_widget(form.message, {attr:{'class':'form-control bg-grey floating'}}) }}
+								</div>
+								<div class="submit-section">
+									{{ form_row(form.Enregistrer , {attr:{'class':'btn btn-primary save-btn'}}) }}
+								</div>
+								{{ form_end(form) }}
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="col-lg-4 col-md-12 sidebar-right theiaStickySidebar">
-
 					<div class="card search-widget">
 						<div class="card-body">
 							<form class="search-form">
@@ -109,40 +111,48 @@
 					</div>
 					<div class="card post-widget">
 						<div class="card-header">
-						
+
 							<h4 class="card-title">Derniers Articles</h4>
 						</div>
 						<div class="card-body">
-						 {% for article in article|slice(0,2) %}
-							<ul class="latest-posts">
-								<li>
-									<div class="post-thumb">
-									
-								
-										<a href="blog-details.html">
-										
-											<img class="img-fluid" src="assets/img/blog/blog-thumb-01.jpg" alt="">
-										</a>
-									</div>
-									<div class="post-info">
-									
-										<h4>
-											<a href="blog-details.html">{{article.nom }}</a>
-										</h4>
-										<p>{{article.date|date('d/m/y') }}</p>
-									</div>
-								</li>
-								
-							
-							
-								
-								
-							</ul>
-							     {% endfor %}
+							{% for article in article|slice(0,2) %}
+
+								<ul class="latest-posts">
+									<span>
+										<li>
+											<div class="post-thumb">
+
+
+												<a href="{{ path('app_blog_details',{id: article.id}) }}">
+
+													{% for image in article.images|slice(0, 1) %}
+														<img src="{{ asset('/uploads/'~image.name) }}" alt="" width="80" height="53,3333"/>
+													{% endfor %}
+												</a>
+												<br>
+
+											</div>
+
+
+											<h4>
+											 &nbsp; 
+												<a href="blog-details.html">{{article.nom }}</a>
+											</h4>
+											<p>&nbsp;{{article.date|date('d/m/y') }}</p>
+
+										</li>
+
+
+									</span>
+
+								</ul>
+
+
+							{% endfor %}
 						</div>
-					</div>
-                
-<div class="card blog-share clearfix">
+
+
+						<div class="card blog-share clearfix">
 							<div class="card-header">
 								<h4 class="card-title">Partager l'article</h4>
 							</div>
@@ -176,50 +186,29 @@
 								</ul>
 							</div>
 						</div>
-					<div class="card category-widget">
-						<div class="card-header">
-							<h4 class="card-title">Catégories des articles</h4>
-						</div>
-						<div class="card-body">
-							<ul class="categories">
-								<li>
-									<a href="#">Cardiology
-										<span>(62)</span>
-									</a>
-								</li>
-								<li>
-									<a href="#">Health Care
-										<span>(27)</span>
-									</a>
-								</li>
-								<li>
-									<a href="#">Nutritions
-										<span>(41)</span>
-									</a>
-								</li>
-								
-								<li>
-									<a href="#">Medical Research
-										<span>(55)</span>
-									</a>
-								</li>
-								<li>
-									<a href="#">Health Treatment
-										<span>(07)</span>
-									</a>
-								</li>
-							</ul>
+						<div class="card category-widget">
+							<div class="card-header">
+								<h4 class="card-title">Catégories des articles</h4>
+							</div>
+							{%for specialite in specialities %}
+								<div class="card-body">
+									<ul class="categories">
+										{{specialite.nom}}
+									</ul>
+								</div>
+							{% endfor %}
 						</div>
 					</div>
-				</div>
-				
+
 
 				</div>
 			</div>
 		</div>
 	</div>
-{% endblock %}
-{% block footer %}
-{{ parent() }}
 
 {% endblock %}
+{% block footer %}
+	{{ parent() }}
+
+{% endblock %}
+
