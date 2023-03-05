@@ -258,6 +258,7 @@ class ArticleController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_article_edit', ['id' => $article->getId()]);
     }
+    
     #[Route('/article/{id}/like', name: 'article_like', methods: ['GET', 'POST'])]
     public function like(Article $article): Response
     {
@@ -286,57 +287,10 @@ class ArticleController extends AbstractController
         return $this->json(['count' => $article->getLikesCount()]);
     }
  
-#[Route('/article/{id}/dislike', name: 'article_dislike', methods: ['GET', 'POST'])]
-public function dislike(Article $article): Response
-{
-    $entityManager = $this->getDoctrine()->getManager();
-    $user = $this->getUser();
-
-    if (!$user) {
-        return $this->json(['error' => 'Vous devez être connecté pour disliker un article.'], 403);
-    }
-
-    $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
-        'article' => $article,
-        'user' => $user,
-    ]);
-
-    if (!$articleLike) {
-        $articleLike = new ArticleLike();
-        $articleLike->setArticle($article)
-            ->setUser($user);
-    }
-
-    $articleLike->setValue(ArticleLike::DISLIKE);
-    $entityManager->persist($articleLike);
-    $entityManager->flush();
-
-    return $this->json(['count' => $article->getLikesCount()]);
-}
 
 
-#[Route('/article/{id}/unlike', name: 'article_unlike', methods: ['GET', 'POST'])]
-public function unlike(Article $article): Response
-{
-    $entityManager = $this->getDoctrine()->getManager();
-    $user = $this->getUser();
 
-    if (!$user) {
-        return $this->json(['error' => 'Vous devez être connecté pour unliker un article.'], 403);
-    }
 
-    $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
-        'article' => $article,
-        'user' => $user,
-    ]);
-
-    if ($articleLike) {
-        $entityManager->remove($articleLike);
-        $entityManager->flush();
-    }
-
-    return $this->json(['count' => $article->getLikesCount()]);
-}
 
 
 #[Route('/article/{id}/undislike', name: 'article_undislike', methods: ['GET', 'POST'])]

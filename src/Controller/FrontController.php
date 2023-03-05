@@ -59,7 +59,7 @@ class FrontController extends AbstractController
         $article = $paginator->paginate(
             $article, // Requête contenant les données à paginer 
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            1 //Nombre de résultats par page
+            1//Nombre de résultats par page
         );
         $idsSelectedArticles = [];
         foreach($article as $art){

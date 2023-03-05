@@ -47,15 +47,15 @@
    <div>
         
        {#<button class="feather-thumbs-up" data-url="{{ path('article_like', {'id': article.id}) }}">Like</button>#} 
-		        <a data-url="{{ path('article_like', {'id': article.id}) }}" class="feather-thumbs-up"></a>
-				<a data-url="{{ path('article_unlike', {'id': article.id}) }}" class="feather-thumbs-down"></a>
-				<span id="js-likes-count">{{ article.articleLikes|length }}</span> Likes
-				
+		      
        {# <button class="js-dislike-btn" data-url="{{ path('article_dislike', {'id': article.id}) }}">Dislike</button>
         <button class="js-unlike-btn" data-url="{{ path('article_unlike', {'id': article.id}) }}">Unlike</button>
         <button class="js-undislike-btn" data-url="{{ path('article_undislike', {'id': article.id}) }}">Undislike</button>
 #}
     </div>
+				  <a data-url="{{ path('article_like', {'id': article.id}) }}" class="feather-thumbs-up"></a>
+				<a data-url="{{ path('article_undislike', {'id': article.id}) }}" class="feather-thumbs-down"></a>
+				<span id="js-likes-count">{{ article.articleLikes|length }}</span> Likes
 									
 {% endif %}
 	</li>
@@ -260,10 +260,44 @@
 		</div>
 	</div>
 
+  <h1>Social Share Buttons + Counters</h1>
+    <div class="social">
+        <div class="social__item">
+            <span class="fa fa-facebook" data-count="..." data-social="fb"></span>
+        </div>
+        <div class="social__item">
+            <span class="fa fa-vk" data-count="..." data-social="vk"></span>
+        </div>
+        <div class="social__item">
+            <span class="fa fa-twitter" data-count="..." data-social="tw"></span>
+        </div>
+        <div class="social__item">
+            <span class="fa fa-linkedin" data-count="..." data-social="ln"></span>
+        </div>
+        <div class="social__item">
+            <span class="fa fa-pinterest" data-count="..." data-social="pt"></span>
+        </div>
+    </div>
+
 {% endblock %}
+{#{% block script %}
+
+{{ parent() }}
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/Belyash/jquery-social-buttons/master/src/jquery.social-buttons.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('[data-social]').socialButtons({
+                url: 'http://belyash.github.io'
+            });
+        });
+		{% endblock %}#}
 {% block script %}
 
 {{ parent() }}
+
+  
+		
 <script>
 $(document).ready(function() {
     $('.feather-thumbs-up').click(function() {
@@ -327,6 +361,7 @@ $(document).ready(function() {
     });
 });
 </script>
+		
 {% endblock %}
 {% block footer %}
 	{{ parent() }}
