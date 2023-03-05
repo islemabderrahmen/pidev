@@ -22,7 +22,7 @@ Nouveau article
 										   <div class="post-author">
                                             <a href="profile.html">
                                                 <img src="{{asset('admin/assets/img/profiles/avatar-02.jpg')}}" alt="Post Author" >
-                                                <span>by Dr. {{article.medecin }}
+                                                <span> Dr. {{article.medecin }}
 												</span>
 											</a>
 										</div>
@@ -47,7 +47,7 @@ Nouveau article
 
 <div class="card blog-comments clearfix">
 							<div class="card-header">
-								<h4 class="card-title">Commentaires (12)</h4>
+								<h4 class="card-title">Commentaires </h4>
 							</div>
 							{%for commentaire in commentaires %}
 							<div class="card-body pb-0">
@@ -55,14 +55,14 @@ Nouveau article
 									<li>
 										<div class="comment">
 											<div class="comment-author">
-												<img class="avatar" alt="" src="assets/img/patients/patient4.jpg">
+												<img class="avatar" alt="" src="{{asset('client/assets/img/patients/patient4.jpg')}}">
 											</div>
 											<div class="comment-block">
 												<span class="comment-by">
 													<span class="blog-author-name">{{commentaire.article.nom }}</span>
 												</span>
 												<p>{{commentaire.message }}</p>
-												<p class="blog-date">Dec 6, 2017</p>
+												<p class="blog-date">{{article.date|date ('d/m/y') }}</p>
 												
 											</div>
 										</div>

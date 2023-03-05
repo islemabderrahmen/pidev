@@ -21,7 +21,7 @@
 			<link rel="stylesheet" href="{{asset('client/assets/plugins/fontawesome/css/all.min.css')}}">
 
 			<link rel="stylesheet" href="{{asset('client/assets/css/aos.css')}}">
-
+    <link rel="stylesheet" href="{{asset('doctor/assets/css/feather.css')}}">
 			<link rel="stylesheet" href="{{asset('client/assets/css/style.css')}}">
 		</head>
 	{% endblock %}
@@ -146,6 +146,7 @@
 		</div>
 	</div>
 </section>
+
 
 <section class="section section-specialities">
 	<div class="container-fluid">
@@ -396,34 +397,46 @@
 			<h2>Nos Articles</h2>
 
 		</div>
-
-		<div class="row blog-grid-row aos aos-init aos-animate " data-aos="fade-up">
-
-
+ 
+		<div class="row blog-grid-row aos" data-aos="fade-up">
+		{% for article in articles %}
 			<div class="col-md-6 col-lg-3 col-sm-12">
-
-				{% for article in articles %}
-					<div class="blog grid-blog">
-
-						<div class="blog-image">
-
-							<a href="{{ path('app_blog_details',{id: article.id})}}">
-								<img</li > </a> <center> {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="251,45" height="314" /> {% endfor %} </a> </div> <div class="blog-content"> <ul class="entry-meta meta-item"> <li> <div class="post-author"> <a href="doctor-profile.html"> <span> dr. {{article.medecin }} </span>
-									<li>
-										<i class="far fa-clock"></i>
-										{{article.date|date ('d/m/y') }}</li>
-								</ul>
-								<h3 class="blog-title">
+             
+				<div class="blog grid-blog">
+				
+					<div class="blog-image">
+					
+						<a href="{{ path('app_blog_details',{id: article.id})}}">
+						<img  {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" alt="" width="268,5" height="177,667" />  {% endfor %} </a> <div class="fav-btn"> </div>
+					</div>
+					<div class="blog-content">
+						<ul class="entry-meta meta-item">
+							<li>
+								<div class="post-author">
+									<a href="doctor-profile.html">
+									
+									<a href="doctor-profile.html"> <span> Dr. {{article.medecin }} </span>
+									</a>
+								</div>
+							</li>
+							<li>
+								<i class="far fa-clock"></i>
+								{{article.date|date ('d/m/y') }}</li></li>
+						</ul>
+						<h3 class="blog-title">
 									<a href="{{ path('app_blog_details',{id: article.id})}}">
 										{{article.nom }}</a>
 								</h3>
-								<p class="mb-0">{{article.description|slice(0,100) }}</p>
-							</div>
-						</div>
-					{% endfor %}
+								<p class="mb-0">{{article.description|slice(0,50) }}...</p>
+					</div>
+					
 				</div>
+
 			</div>
+			{% endfor %}
 		</div>
+	</div>
+	
 
 
 		<div class="view-all text-center aos" data-aos="fade-up">
@@ -515,7 +528,7 @@
 		</div>
 	</div>
 
-{ %   block footer  % }
+	
 	<div class="footer-bottom">
 		<div class="container-fluid">
 
@@ -548,12 +561,12 @@
 </footer>
 
 
-{ % endblock %}
+{% endblock %}{% block script %}
 
+<script data-cfasync="false" src="https://doccure.dreamguystech.com/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="{{asset('client/assets/js/jquery-3.6.0.min.js')}}"></script>
+<script src="{{asset('client/assets/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{asset('client/assets/js/slick.js')}}"></script>
+<script src="{{asset('client/assets/js/aos.js')}}"></script>
+<script src="{{asset('client/assets/js/script.js')}}"></script>{% endblock %}</body>
 
-{% endblock %}
-
-
-{% block script %}
-
-<script data-cfasync="false" src="https://doccure.dreamguystech.com/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="{{asset('client/assets/js/jquery-3.6.0.min.js')}}"></script><script src="{{asset('client/assets/js/bootstrap.bundle.min.js')}}"></script><script src="{{asset('client/assets/js/slick.js')}}"></script><script src="{{asset('client/assets/js/aos.js')}}"></script><script src="{{asset('client/assets/js/script.js')}}"></script>{% endblock %}</body>

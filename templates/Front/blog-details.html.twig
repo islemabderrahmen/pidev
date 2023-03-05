@@ -24,7 +24,8 @@
 										<ul>
 											<li>
 												<div class="post-author">
-													<a href="doctor-profile.html"><img src="assets/img/doctors/doctor-thumb-02.jpg" alt="">
+													<a href="doctor-profile.html">
+													<img src="{{asset('client/assets/img/doctors/doctor-thumb-02.jpg ')}}" alt="" >
 														<span>Dr.
 															{{article.medecin}}</span>
 													</a>
@@ -35,13 +36,40 @@
 												{{article.date|date ('d/m/y') }}</li>
 											<li>
 												<i class="far fa-comments"></i> Comments</li>
-
+												
+											<li>
+										<i class="feather-package">
+										</i>{{article.specialites }}
+										</li>
+										
+										<li>
+										{% if app.user %}
+   <div>
+        
+       {#<button class="feather-thumbs-up" data-url="{{ path('article_like', {'id': article.id}) }}">Like</button>#} 
+		        <a data-url="{{ path('article_like', {'id': article.id}) }}" class="feather-thumbs-up"></a>
+				<a data-url="{{ path('article_unlike', {'id': article.id}) }}" class="feather-thumbs-down"></a>
+				<span id="js-likes-count">{{ article.articleLikes|length }}</span> Likes
+				
+       {# <button class="js-dislike-btn" data-url="{{ path('article_dislike', {'id': article.id}) }}">Dislike</button>
+        <button class="js-unlike-btn" data-url="{{ path('article_unlike', {'id': article.id}) }}">Unlike</button>
+        <button class="js-undislike-btn" data-url="{{ path('article_undislike', {'id': article.id}) }}">Undislike</button>
+#}
+    </div>
+									
+{% endif %}
+	</li>
 										</ul>
+	   
 									</div>
 								</div>
 								<div class="blog-content">
 									{{article.description}}
 								</div>
+								
+
+
+
 							</div>
 						{% endfor %}
 
@@ -56,19 +84,43 @@
 										<li>
 											<div class="comment">
 												<div class="comment-author">
-													<img class="avatar" alt="" src="assets/img/patients/patient4.jpg">
+													<img class="avatar" alt="" src="{{asset('client/assets/img/patients/patient4.jpg')}}">
 												</div>
-												<div class="comment-block">
-													<span class="comment-by">
-														<span class="blog-author-name">{{commentaire.utilisateur}}</span>
-													</span>
-													<p>{{commentaire.message }}</p>
-													<p class="blog-date">{{commentaire.date|date('y-m-d')}}</p>
-
-												</div>
+												<class="comment-block">
+												<span class="comment-by">
+													<span class="blog-author-name">{{commentaire.article.nom }}</span>
+												</span>
+												<p>{{commentaire.message }}</p>
+												<p class="blog-date">{{commentaire.date|date('y-m-d')}}</p>
+												
+											
 											</div>
 
 										</li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 									</ul>
@@ -138,6 +190,7 @@
 											 &nbsp; 
 												<a href="blog-details.html">{{article.nom }}</a>
 											</h4>
+											
 											<p>&nbsp;{{article.date|date('d/m/y') }}</p>
 
 										</li>
@@ -193,7 +246,8 @@
 							{%for specialite in specialities %}
 								<div class="card-body">
 									<ul class="categories">
-										{{specialite.nom}}
+										{{specialite.nom}} 
+
 									</ul>
 								</div>
 							{% endfor %}
@@ -206,6 +260,73 @@
 		</div>
 	</div>
 
+{% endblock %}
+{% block script %}
+
+{{ parent() }}
+<script>
+$(document).ready(function() {
+    $('.feather-thumbs-up').click(function() {
+        var url = $(this).data('url');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            success: function(response) {
+                $('#js-likes-count').html(response.count);
+            },
+            error: function(response) {
+                alert('Une erreur est survenue : ' + response.responseJSON.error);
+            }
+        });
+    });
+
+    $('.js-dislike-btn').click(function() {
+        var url = $(this).data('url');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            success: function(response) {
+                $('#js-likes-count').html(response.count);
+            },
+            error: function(response) {
+                alert('Une erreur est survenue : ' + response.responseJSON.error);
+            }
+        });
+    });
+
+    $('.feather-thumbs-down').click(function() {
+        var url = $(this).data('url');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            success: function(response) {
+                $('#js-likes-count').html(response.count);
+            },
+            error: function(response) {
+                alert('Une erreur est survenue : ' + response.responseJSON.error);
+            }
+        });
+    });
+
+    $('.js-undislike-btn').click(function() {
+        var url = $(this).data('url');
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            success: function(response) {
+                $('#js-likes-count').html(response.count);
+            },
+            error: function(response) {
+                alert('Une erreur est survenue : ' + response.responseJSON.error);
+            }
+        });
+    });
+});
+</script>
 {% endblock %}
 {% block footer %}
 	{{ parent() }}

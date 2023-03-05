@@ -76,11 +76,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Images::class)]
     private Collection $images;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ArticleLike::class)]
+    private Collection $articleLikes;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ArticleFavorie::class)]
+    private Collection $articleFavories;
+
+
+   
+  
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
         $this->reclamations = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->articleLikes = new ArrayCollection();
+        $this->articleFavories = new ArrayCollection();
+     
+     
     }
 
 
@@ -362,4 +376,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string{
         return (string)$this->nom;
        }
+
+    /**
+     * @return Collection<int, ArticleLike>
+     */
+    public function getArticleLikes(): Collection
+    {
+        return $this->articleLikes;
+    }
+
+    public function addArticleLike(ArticleLike $articleLike): self
+    {
+        if (!$this->articleLikes->contains($articleLike)) {
+            $this->articleLikes->add($articleLike);
+            $articleLike->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleLike(ArticleLike $articleLike): self
+    {
+        if ($this->articleLikes->removeElement($articleLike)) {
+            // set the owning side to null (unless already changed)
+            if ($articleLike->getUser() === $this) {
+                $articleLike->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ArticleFavorie>
+     */
+    public function getArticleFavories(): Collection
+    {
+        return $this->articleFavories;
+    }
+
+    public function addArticleFavory(ArticleFavorie $articleFavory): self
+    {
+        if (!$this->articleFavories->contains($articleFavory)) {
+            $this->articleFavories->add($articleFavory);
+            $articleFavory->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleFavory(ArticleFavorie $articleFavory): self
+    {
+        if ($this->articleFavories->removeElement($articleFavory)) {
+            // set the owning side to null (unless already changed)
+            if ($articleFavory->getUser() === $this) {
+                $articleFavory->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+    
+       
 }

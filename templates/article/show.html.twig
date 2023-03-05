@@ -32,7 +32,7 @@
 							<i class="feather-chevron-left"></i>
 							Liste des articles</a>
 						 <div class="blog-image">
-                                       <img <center> {% for image in article.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" /> {% endfor %}</a>
+                                       <img <center> {% for image in medecin.images|slice(0, 1) %} <img src="{{ asset('/uploads/'~image.name) }}" /> {% endfor %}</a>
                          </div>
 						<h3 class="blog-title">{{article.nom }}</h3>
 						<div class="blog-info">
@@ -42,7 +42,7 @@
 										   <div class="post-author">
                                             <a href="profile.html">
                                                 <img src="{{asset('admin/assets/img/profiles/avatar-02.jpg')}}" alt="Post Author" >
-                                                <span>by Dr. Lester
+                                                <span>par le Dr.{{article.medecin}}
 												</span>
 											</a>
 										</div>
@@ -51,10 +51,10 @@
 											<i class="far fa-calendar"></i>{{article.date|date ('d/m/y') }}</li>
 										<li>
 										<i class="feather-message-circle"></i>
-										40 Comments</li>
+										Commentaires</li>
 									<li>
 										<i class="feather-package"></i>
-										Topical chemotherapy, Gynacologist</li>
+										{{article.specialites }}</li>
 								</ul>
 							</div>
 						</div>
@@ -67,7 +67,7 @@
 
 <div class="card blog-comments clearfix">
 							<div class="card-header">
-								<h4 class="card-title">Commentaires (12)</h4>
+								<h4 class="card-title">Commentaires </h4>
 							</div>
 							{%for commentaire in commentaires %}
 							<div class="card-body pb-0">
@@ -79,7 +79,7 @@
 											</div>
 											<div class="comment-block">
 												<span class="comment-by">
-													<span class="blog-author-name">{{commentaire.article.nom }}</span>
+													<span class="blog-author-name">{{commentaire.medecin.nom }}</span>
 												</span>
 												<p>{{commentaire.message }}</p>
 												<p class="blog-date">Dec 6, 2017</p>

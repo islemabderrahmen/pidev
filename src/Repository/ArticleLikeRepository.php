@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Article;
+use App\Entity\ArticleLike;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Article>
+ * @extends ServiceEntityRepository<ArticleLike>
  *
- * @method Article|null find($id, $lockMode = null, $lockVersion = null)
- * @method Article|null findOneBy(array $criteria, array $orderBy = null)
- * @method Article[]    findAll()
- * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ArticleLike|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ArticleLike|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ArticleLike[]    findAll()
+ * @method ArticleLike[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ArticleRepository extends ServiceEntityRepository
+class ArticleLikeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Article::class);
+        parent::__construct($registry, ArticleLike::class);
     }
 
-    public function save(Article $entity, bool $flush = false): void
+    public function save(ArticleLike $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,52 +30,17 @@ class ArticleRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Article $entity, bool $flush = false): void
+    public function remove(ArticleLike $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-
-
-
-
-
     }
-
-
-    public function getLikesCount($articleId)
-    {
-        $qb = $this->createQueryBuilder('a');
-        $qb->select('COUNT(l.id)');
-        $qb->leftJoin('a.likes', 'l');
-        $qb->where('a.id = :articleId');
-        $qb->setParameter('articleId', $articleId);
-        $query = $qb->getQuery();
-        $result = $query->getSingleScalarResult();
-    
-        return $result;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //    /**
-//     * @return Article[] Returns an array of Article objects
+//     * @return ArticleLike[] Returns an array of ArticleLike objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -89,7 +54,7 @@ class ArticleRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Article
+//    public function findOneBySomeField($value): ?ArticleLike
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')

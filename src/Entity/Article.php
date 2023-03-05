@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -17,20 +18,30 @@ class Article
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('articles')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-   #[Assert\NotBlank(message: 'Le nom du ne peut pas être vide')]
+    #[Assert\Length(
+        min: 9,
+        max: 50,
+        minMessage: 'le nom doit etre plus que {{ limit }} caractéres',
+        maxMessage: 'le nom doit etre inferieur de {{ limit }} caractéres',
+    )]
+    
+   #[Assert\NotBlank(message: 'Le nom  ne peut pas être vide')]
+   #[Groups('articles')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Larticle du ne peut pas être vide')]
+    #[Assert\NotBlank(message: 'La description ne peut pas être vide')]
     #[Assert\Length(
-        min: 200,
+        min: 20,
         max: 2000,
-        minMessage: 'Your text name must be at least {{ limit }} characters long',
-        maxMessage: 'Your text name cannot be longer than {{ limit }} characters',
+        minMessage: 'votre text doit etre plus que {{ limit }} caractéres',
+        maxMessage: 'votre text doit etre inferieur de {{ limit }} caractéres',
     )]
+    #[Groups('articles')]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
@@ -48,6 +59,15 @@ class Article
     #[ORM\ManyToOne(inversedBy: 'articles')]
     private ?Specialites $specialites = null;
 
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: ArticleLike::class)]
+    private Collection $articleLikes;
+
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: ArticleFavorie::class)]
+    private Collection $articleFavories;
+
+
+  
+
   
 
     public function __construct()
@@ -55,7 +75,10 @@ class Article
         $this->commentaires = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->date= new \DateTime();
-
+        $this->articleLikes = new ArrayCollection();
+        $this->articleFavories = new ArrayCollection();
+       
+       
         
     
        
@@ -192,7 +215,81 @@ class Article
         return $this;
     }
 
+    /**
+     * @return Collection<int, ArticleLike>
+     */
+    public function getArticleLikes(): Collection
+    {
+        return $this->articleLikes;
+    }
+
+    public function addArticleLike(ArticleLike $articleLike): self
+    {
+        if (!$this->articleLikes->contains($articleLike)) {
+            $this->articleLikes->add($articleLike);
+            $articleLike->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleLike(ArticleLike $articleLike): self
+    {
+        if ($this->articleLikes->removeElement($articleLike)) {
+            // set the owning side to null (unless already changed)
+            if ($articleLike->getArticle() === $this) {
+                $articleLike->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+    public function getLikesCount(): int
+    {
+        return $this->articleLikes->count();
+    }
+
+    /**
+     * @return Collection<int, ArticleFavorie>
+     */
+    public function getArticleFavories(): Collection
+    {
+        return $this->articleFavories;
+    }
+
+    public function addArticleFavory(ArticleFavorie $articleFavory): self
+    {
+        if (!$this->articleFavories->contains($articleFavory)) {
+            $this->articleFavories->add($articleFavory);
+            $articleFavory->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArticleFavory(ArticleFavorie $articleFavory): self
+    {
+        if ($this->articleFavories->removeElement($articleFavory)) {
+            // set the owning side to null (unless already changed)
+            if ($articleFavory->getArticle() === $this) {
+                $articleFavory->setArticle(null);
+            }
+        }
+
+        return $this;
+    }
+}
+    
+   
+
+   
+
    
 
     
-}
+
+    
+   
+
+    
+

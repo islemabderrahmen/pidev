@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/commentaire')]
 class CommentaireController extends AbstractController
@@ -24,7 +26,71 @@ class CommentaireController extends AbstractController
         ]);
     }
 
-   
+    
+    //Mobile
+    #[Route('/All', name: 'app_commentaires_liste')]
+    public function ListeCommentaire(CommentaireRepository $commentaire, SerializerInterface $serializer)
+    {
+        $commentaire = $commentaire->findAll();
+        $commentaireNormailize = $serializer->serialize($commentaire, 'json', ['groups' => "commentaires"]);
+
+        $json = json_encode($commentaireNormailize);
+        return  new response($json);
+    }
+
+    #[Route('/commentaireJson/{id}', name: 'app_commentaire_seule')]
+    public function artcileId($id,CommentaireRepository $commentaire, SerializerInterface $serializer)
+    {
+        $commentaire = $commentaire->find($id);
+        $commentaireNormailize = $serializer->serialize($commentaire, 'json', ['groups' => "commentaires"]);
+    
+        $json = json_encode($commentaireNormailize);
+        return  new response($json);
+    }
+    #[Route('/add/commentaireJson', name: 'app_commentaire_new_json')]
+    public function addcommentaireJson(Request $request, NormalizerInterface $normalizerInterface): Response
+    {   
+        $em=$this->getDoctrine()->getManager();
+        $commentaire = new commentaire();
+        $commentaire->setDate(new \DateTime());
+        $commentaire->setMessage($request->get('message'));
+        
+        
+        $em->persist($commentaire);
+        $em->flush();
+        $jsonContent=$normalizerInterface->normalize($commentaire,'json',['groups'=>'commentaires']);
+        return new Response(json_encode($jsonContent)); 
+    
+    }
+    #[Route('/edit/{id}/commentaireJson', name: 'app_commentaire_edit_json')]
+    public function editCommentaireJson(Request $request, $id,NormalizerInterface $normalizerInterface): Response
+    {   
+        $em=$this->getDoctrine()->getManager();
+        $commentaire=$em->getRepository(Commentaire::class)->find($id);
+       
+       
+        $commentaire->setDate(new \DateTime());
+        $commentaire->setMessage($request->get('message'));
+    
+        $em->flush();
+        $jsonContent=$normalizerInterface->normalize($commentaire,'json',['groups'=>'commentaires']);
+        return new Response(json_encode($jsonContent));
+ 
+    }
+    #[Route('/delete/commentaireJson/{id}', name: 'app_commentaire_delete_seule')]
+    public function deleteassistantJson($id,CommentaireRepository $commentaire, NormalizerInterface $normalizerInterface,Request $request)
+    {
+        $em=$this->getDoctrine()->getManager();
+        $commentaire=$em->getRepository(Commentaire::class)->find($id);
+        $em->remove($commentaire);
+        $em->flush();
+        $jsonContent=$normalizerInterface->normalize($commentaire,'json',['groups'=>'commentaires']);
+        return  new Response("commentaire deleted successfully". json_encode($jsonContent));
+    }
+
+
+
+
 
     #[Route('/{id}', name: 'app_commentaire_show', methods: ['GET'])]
     public function show(Commentaire $commentaire): Response

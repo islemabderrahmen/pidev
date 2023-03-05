@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\ArticleLike;
 use App\Entity\Images;
 use App\Entity\Medecin;
 use App\Entity\Specialites;
@@ -17,6 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+
 #lena route lkol men fou9 bch tkoun fama kelmet article w koll page bch todekhlelha bch tetzed route mtaaa l page athyka l route mere #
 #[Route('/article')]
 class ArticleController extends AbstractController
@@ -25,6 +29,8 @@ class ArticleController extends AbstractController
 
     public function __construct(EntityManagerInterface $entityManager)
     {
+        #permet de faire le crud
+        
         $this->entityManager = $entityManager;
     }
     #[Route('/', name: 'app_article_index', methods: ['GET'])]
@@ -51,11 +57,12 @@ class ArticleController extends AbstractController
     public function new(Request $request, ArticleRepository $articleRepository): Response
     {    $iduser=$this->getUser();
           $specialte=$iduser->getSpecialites();
-          
+          #inastancier un nouvelle objet de type article
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
+        #permet de lier le formulaire a la requette https recue par le controlleur 
         $form->handleRequest($request);
-
+#la methode  vérifie si la formulaire a été soumis et validé 
         if ($form->isSubmitted() && $form->isValid()) {
              //on recupere les images transmises
              $images = $form->get('images')->getData();
@@ -90,6 +97,84 @@ class ArticleController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    
+    //Mobile
+        #[Route('/All', name: 'app_articles_liste')]
+        public function ListeArticle(ArticleRepository $article, SerializerInterface $serializer)
+        {
+            $article = $article->findAll([],['nom'=>'desc']);
+            $articleNormailize = $serializer->serialize($article, 'json', ['groups' => "articles"]);
+    
+            $json = json_encode($articleNormailize);
+            return  new response($json);
+        }
+      
+        #[Route('/articleJson/{id}', name: 'app_article_seule')]
+        public function artcileId($id,ArticleRepository $article, SerializerInterface $serializer)
+        {
+            $article = $article->find($id);
+            $articleNormailize = $serializer->serialize($article, 'json', ['groups' => "articles"]);
+        
+            $json = json_encode($articleNormailize);
+            return  new response($json);
+        }
+
+        #[Route('/add/articleJson', name: 'app_article_new_json')]
+        public function addarticleJson(Request $request, NormalizerInterface $normalizerInterface): Response
+        {   
+            $em=$this->getDoctrine()->getManager();
+            $article = new article();
+            $article->setNom($request->get('nom'));
+            $article->setDescription($request->get('description'));
+            $article->setDate(new \DateTime());
+          
+            
+            
+            $em->persist($article);
+            $em->flush();
+            $jsonContent=$normalizerInterface->normalize($article,'json',['groups'=>'articles']);
+            return new Response(json_encode($jsonContent));
+        
+           
+        }
+
+        #[Route('/edit/{id}/articleJson', name: 'app_article_edit_json')]
+        public function editArticleJson(Request $request, $id,NormalizerInterface $normalizerInterface): Response
+        {   
+            $em=$this->getDoctrine()->getManager();
+            $article=$em->getRepository(Article::class)->find($id);
+           
+           
+            $article->setNom($request->get('nom'));
+            $article->setDescription($request->get('description'));
+            $article->setDate(new \DateTime());
+           
+        
+            $em->flush();
+            $jsonContent=$normalizerInterface->normalize($article,'json',['groups'=>'articles']);
+            return new Response(json_encode($jsonContent));
+  
+        
+        }
+        #[Route('/delete/articleJson/{id}', name: 'app_article_delete_seule')]
+        public function deleteArticleJson($id,ArticleRepository $article, NormalizerInterface $normalizerInterface,Request $request)
+        {
+            $em=$this->getDoctrine()->getManager();
+            $article=$em->getRepository(Article::class)->find($id);
+            $em->remove($article);
+            $em->flush();
+            $jsonContent=$normalizerInterface->normalize($article,'json',['groups'=>'articles']);
+            return  new Response("article deleted successfully". json_encode($jsonContent));
+        }
+    
+
+
+
+
+
+
+
 
     #[Route('/show/{id}', name: 'app_article_show', methods: ['GET'])]
     public function show(Article $article ,CommentaireRepository $commentaireRepository): Response
@@ -173,4 +258,109 @@ class ArticleController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_article_edit', ['id' => $article->getId()]);
     }
+    #[Route('/article/{id}/like', name: 'article_like', methods: ['GET', 'POST'])]
+    public function like(Article $article): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->json(['error' => 'Vous devez être connecté pour liker un article.'], 403);
+        }
+
+        $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
+            'article' => $article,
+            'user' => $user,
+        ]);
+
+        if (!$articleLike) {
+            $articleLike = new ArticleLike();
+            $articleLike->setArticle($article)
+                ->setUser($user);
+        }
+
+        $articleLike->setValue(ArticleLike::LIKE);
+        $entityManager->persist($articleLike);
+        $entityManager->flush();
+
+        return $this->json(['count' => $article->getLikesCount()]);
+    }
+ 
+#[Route('/article/{id}/dislike', name: 'article_dislike', methods: ['GET', 'POST'])]
+public function dislike(Article $article): Response
+{
+    $entityManager = $this->getDoctrine()->getManager();
+    $user = $this->getUser();
+
+    if (!$user) {
+        return $this->json(['error' => 'Vous devez être connecté pour disliker un article.'], 403);
+    }
+
+    $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
+        'article' => $article,
+        'user' => $user,
+    ]);
+
+    if (!$articleLike) {
+        $articleLike = new ArticleLike();
+        $articleLike->setArticle($article)
+            ->setUser($user);
+    }
+
+    $articleLike->setValue(ArticleLike::DISLIKE);
+    $entityManager->persist($articleLike);
+    $entityManager->flush();
+
+    return $this->json(['count' => $article->getLikesCount()]);
+}
+
+
+#[Route('/article/{id}/unlike', name: 'article_unlike', methods: ['GET', 'POST'])]
+public function unlike(Article $article): Response
+{
+    $entityManager = $this->getDoctrine()->getManager();
+    $user = $this->getUser();
+
+    if (!$user) {
+        return $this->json(['error' => 'Vous devez être connecté pour unliker un article.'], 403);
+    }
+
+    $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
+        'article' => $article,
+        'user' => $user,
+    ]);
+
+    if ($articleLike) {
+        $entityManager->remove($articleLike);
+        $entityManager->flush();
+    }
+
+    return $this->json(['count' => $article->getLikesCount()]);
+}
+
+
+#[Route('/article/{id}/undislike', name: 'article_undislike', methods: ['GET', 'POST'])]
+public function undislike(Article $article): Response
+{
+    $entityManager = $this->getDoctrine()->getManager();
+    $user = $this->getUser();
+
+    if (!$user) {
+        return $this->json(['error' => 'Vous devez être connecté pour undisliker un article.'], 403);
+    }
+
+    $articleLike = $entityManager->getRepository(ArticleLike::class)->findOneBy([
+        'article' => $article,
+        'user' => $user,
+    ]);
+
+    if ($articleLike) {
+        $entityManager->remove($articleLike);
+        $entityManager->flush();
+    }
+
+    return $this->json(['count' => $article->getLikesCount()]);
+}
+
+
 }
